@@ -31,8 +31,10 @@ import java.util.Map;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.api.server.rule.RulesDefinitionAnnotationLoader;
 import org.sonar.plugins.php.api.visitors.PHPCustomRuleRepository;
+import org.sonar.samples.php.checks.FieldNameWithUnderScorePrefixUseCheck;
 import org.sonar.samples.php.checks.ForbiddenFunctionUseCheck;
 import org.sonar.samples.php.checks.OtherForbiddenFunctionUseCheck;
+import org.sonar.samples.php.checks.ProtectedMembersUseCheck;
 
 /**
  * Extension point to define a PHP rule repository.
@@ -53,12 +55,15 @@ public class MyPhpRules implements RulesDefinition, PHPCustomRuleRepository {
    */
   @Override
   public ImmutableList<Class> checkClasses() {
-    return ImmutableList.of(ForbiddenFunctionUseCheck.class, OtherForbiddenFunctionUseCheck.class);
+    return ImmutableList.of(ForbiddenFunctionUseCheck.class,
+            ProtectedMembersUseCheck.class,
+            FieldNameWithUnderScorePrefixUseCheck.class,
+            OtherForbiddenFunctionUseCheck.class);
   }
 
   @Override
   public void define(Context context) {
-    NewRepository repository = context.createRepository(repositoryKey(), "php").setName("MyCompany Custom Repository");
+    NewRepository repository = context.createRepository(repositoryKey(), "php").setName("Demo php Repository");
 
     // Load rule meta data from annotations
     RulesDefinitionAnnotationLoader annotationLoader = new RulesDefinitionAnnotationLoader();
@@ -71,6 +76,8 @@ public class MyPhpRules implements RulesDefinition, PHPCustomRuleRepository {
     Map<String, String> remediationCosts = new HashMap<>();
     remediationCosts.put(ForbiddenFunctionUseCheck.KEY, "5min");
     remediationCosts.put(OtherForbiddenFunctionUseCheck.KEY, "5min");
+    remediationCosts.put(ProtectedMembersUseCheck.KEY, "5min");
+    remediationCosts.put(FieldNameWithUnderScorePrefixUseCheck.KEY, "5min");
     repository.rules().forEach(rule -> rule.setDebtRemediationFunction(
       rule.debtRemediationFunctions().constantPerIssue(remediationCosts.get(rule.key()))));
 
