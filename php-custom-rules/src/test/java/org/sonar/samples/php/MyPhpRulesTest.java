@@ -13,6 +13,6 @@ public class MyPhpRulesTest {
     RulesDefinition.Context context = new RulesDefinition.Context();
     rulesDefinition.define(context);
     RulesDefinition.Repository repository = context.repository("custom");
-    assertEquals(2, repository.rules().size());
+    assertEquals(4, repository.rules().size());
   }
 }
